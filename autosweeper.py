@@ -3,6 +3,7 @@
 # 3 Modes: Flagging, Revealing, Chording
 # Download Selenium
 # Corners, 1 2 3, 121 Combo
+# Statistics Saving
 
 import pyautogui, time
 
@@ -11,7 +12,7 @@ def zzz():
 
 def openBrowser():
     browser = pyautogui.locateCenterOnScreen('chrome.png', confidence = 0.8)
-    if browser is not None:
+    if browser:
         pyautogui.click(browser)
         pyautogui.hotkey('ctrl', 't')
     else:
@@ -19,25 +20,29 @@ def openBrowser():
     zzz()
 
 def openMinesweeper():
-    mso = None
-    while mso is None:
-        mso = pyautogui.locateCenterOnScreen('minesweeperonline.png', confidence = 0.8)
-        pyautogui.click(mso)
-        zzz()
-    zzz()
+    while True:
+        try:
+            mso = pyautogui.locateCenterOnScreen('minesweeperonline.png', confidence = 0.8)
+            if mso:
+                pyautogui.click(mso)
+                zzz()
+                break
+        except pyautogui.ImageNotFoundException:
+            print("Minesweeper Online icon not found")
+            zzz()
 
 def difficulty():
     diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
     img = f"{diff}.png"
     pos = None
     while pos is None:
-        pos = pyautogui.locateCenterOnScreen(img, confidence = 0.8)
-        if pos is not None:
-            pyautogui.click(pos)
-        else:
-            print("Difficulty button not found")
-        zzz()
-    zzz()
+        try:
+            pos = pyautogui.locateCenterOnScreen(img, confidence = 0.8)
+            if pos:
+                pyautogui.click(pos)
+        except pyautogui.ImageNotFoundException:
+            print(f"{diff} button not found")
+            zzz()
 
 zzz()
 openBrowser()
