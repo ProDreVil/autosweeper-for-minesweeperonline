@@ -3,6 +3,7 @@
 # 3 Modes: Flagging, Revealing, Chording
 # Corners, 1 2 3, 121 Combo
 # Statistics Saving
+# Center + Randomized Initial Clicks
 
 import pyautogui, time
 
@@ -14,7 +15,7 @@ def zzz():
     time.sleep(0.5)
 
 def openBrowser():
-    browser = pyautogui.locateCenterOnScreen('chrome.png', confidence = 0.8)
+    browser = pyautogui.locateCenterOnScreen('resources/chrome.png', confidence = 0.8)
     if browser:
         pyautogui.click(browser)
         pyautogui.hotkey('ctrl', 't')
@@ -25,7 +26,7 @@ def openBrowser():
 def openMinesweeper():
     while True:
         try:
-            mso = pyautogui.locateCenterOnScreen('minesweeperonline.png', confidence = 0.8)
+            mso = pyautogui.locateCenterOnScreen('resources/minesweeperonline.png', confidence = 0.8)
             if mso:
                 pyautogui.click(mso)
                 zzz()
@@ -43,7 +44,7 @@ def difficulty():
     pos = None
     while pos is None:
         try:
-            pos = pyautogui.locateCenterOnScreen(img, confidence = 0.8)
+            pos = pyautogui.locateCenterOnScreen(f"resources/{img}", confidence = 0.8)
             if pos:
                 pyautogui.click(pos)
         except pyautogui.ImageNotFoundException:
