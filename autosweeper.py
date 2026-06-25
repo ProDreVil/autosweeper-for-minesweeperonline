@@ -1,11 +1,14 @@
 # TODO: Automated Minesweeper
 # Color/Number Detection
 # 3 Modes: Flagging, Revealing, Chording
-# Download Selenium
 # Corners, 1 2 3, 121 Combo
 # Statistics Saving
 
 import pyautogui, time
+
+rows = 5
+cols = 5
+board = [['?' for x in range(cols)] for y in range(rows)]
 
 def zzz():
     time.sleep(0.5)
@@ -33,6 +36,9 @@ def openMinesweeper():
 
 def difficulty():
     diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
+    sizes = {"beginner": (9, 9), "intermediate": (16, 16), "expert": (16, 30)}
+    rows, cols = sizes[diff]
+    board = [['?' for x in range(cols)] for y in range(rows)]
     img = f"{diff}.png"
     pos = None
     while pos is None:
@@ -43,22 +49,16 @@ def difficulty():
         except pyautogui.ImageNotFoundException:
             print(f"{diff} button not found")
             zzz()
+    return rows, cols, board
+
+def show(board):
+    print('\n'.join(' '.join(map(str, row)) for row in board))
 
 zzz()
 openBrowser()
 openMinesweeper()
-difficulty()
+zzz()
+rows, cols, board = difficulty()
+zzz()
 
-# from selenium import webdriver
-
-# driver = webdriver.Chrome()
-# driver.get("https://roblox.com")
-
-# pyautogui.PAUSE = 0.3
-
-# for i in range(10):
-#     print(pyautogui.position())
-#     time.sleep(0.3)
-
-#pyautogui.moveTo(100, 100)
-#pyautogui.click()
+show(board)
