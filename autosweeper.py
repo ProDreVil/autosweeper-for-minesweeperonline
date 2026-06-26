@@ -9,6 +9,7 @@ import pyautogui, time, random
 
 rows = 5
 cols = 5
+tile_size = 28
 board = [['?' for x in range(cols)] for y in range(rows)]
 
 def zzz():
@@ -56,6 +57,22 @@ def difficulty(diff):
             print(f"{diff} button not found...")
             zzz()
 
+def start():
+    while True:
+        try:
+            tlc = pyautogui.locateCenterOnScreen('resources/start.png', confidence = 0.8)
+            if tlc:
+                pyautogui.click(tlc)
+                return tlc
+        except pyautogui.ImageNotFoundException:
+            print("Start button not found...")
+            zzz()
+
+def move(row, col):
+    x = origin.x + col * tile_size # 400
+    y = origin.y + row * tile_size # 355
+    pyautogui.moveTo(x, y)
+
 def clickCenter(rows, cols):
     return rows // 2, cols // 2
 
@@ -73,10 +90,15 @@ def clickTile(rows, cols):
 def show(board):
     print('\n'.join(' '.join(map(str, row)) for row in board))
 
+def scanBoard(board):
+    for i in range(3):
+        x = origin
+    return board
+
 
 zzz()
 
-skip = False # skip opening sequence?
+skip = True # skip opening sequence?
 diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
 loops = 1 # how many games to play
 
@@ -88,9 +110,26 @@ if not skip:
     zzz()
 
 zzz()
+while loops > 0:
+    loops -= 1
+    origin = start()
+    # supposed loop starts here
+    scanBoard(board)
+    move(0, 0)
+    zzz()
+    move(0, 1)
+    zzz()
+    move(0, 2)
+    zzz()
+    move(0, 0)
+    zzz()
+    move(0, 1)
+    zzz()
+    move(0, 2)
+    zzz()
+    show(board)
+
 # clickCenter(rows, cols)
 
 # for _ in range(loops):
 #     clickTile(rows, cols)
-
-show(board)
