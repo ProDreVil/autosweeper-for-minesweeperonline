@@ -5,7 +5,7 @@
 # Statistics Saving
 # Center + Randomized Initial Clicks
 
-import pyautogui, time
+import pyautogui, time, random
 
 rows = 5
 cols = 5
@@ -14,13 +14,14 @@ board = [['?' for x in range(cols)] for y in range(rows)]
 def zzz():
     time.sleep(0.5)
 
-def openBrowser():
+def openBrowser(skip):
     browser = pyautogui.locateCenterOnScreen('resources/chrome.png', confidence = 0.8)
     if browser:
         pyautogui.click(browser)
-        pyautogui.hotkey('ctrl', 't')
+        if not skip:
+            pyautogui.hotkey('ctrl', 't')
     else:
-        print("Chrome icon not found")
+        print("Chrome icon not found...")
     zzz()
 
 def openMinesweeper():
@@ -32,34 +33,64 @@ def openMinesweeper():
                 zzz()
                 break
         except pyautogui.ImageNotFoundException:
-            print("Minesweeper Online icon not found")
+            print("Minesweeper Online icon not found...")
             zzz()
 
-def difficulty():
-    diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
+def createBoard(diff):
     sizes = {"beginner": (9, 9), "intermediate": (16, 16), "expert": (16, 30)}
+    if diff not in sizes:
+        raise ValueError(f"Invalid difficulty: {diff}. Choose from {list(sizes.keys())}.")
     rows, cols = sizes[diff]
-    board = [['?' for x in range(cols)] for y in range(rows)]
+    board = [['?' for _ in range(cols)] for _ in range(rows)]
+    return rows, cols, board
+
+def difficulty(diff):
     img = f"{diff}.png"
-    pos = None
-    while pos is None:
+    while True:
         try:
             pos = pyautogui.locateCenterOnScreen(f"resources/{img}", confidence = 0.8)
             if pos:
                 pyautogui.click(pos)
+                break
         except pyautogui.ImageNotFoundException:
-            print(f"{diff} button not found")
+            print(f"{diff} button not found...")
             zzz()
-    return rows, cols, board
+
+def clickCenter(rows, cols):
+    return rows // 2, cols // 2
+
+def clickRandom(board):
+    hidden = []
+    for r in range(len(board)):
+        for c in range(len(board[0])):
+            if board[r][c] == '?':
+                hidden.append((r, c))
+    return random.choice(hidden) if hidden else None
+
+def clickTile(rows, cols):
+    pyautogui.click(clickCenter(rows, cols))
 
 def show(board):
     print('\n'.join(' '.join(map(str, row)) for row in board))
 
+
 zzz()
-openBrowser()
-openMinesweeper()
+
+skip = False # skip opening sequence?
+diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
+loops = 1 # how many games to play
+
+openBrowser(skip)
+rows, cols, board = createBoard(diff)
+if not skip:
+    openMinesweeper()
+    difficulty(diff)
+    zzz()
+
 zzz()
-rows, cols, board = difficulty()
-zzz()
+# clickCenter(rows, cols)
+
+# for _ in range(loops):
+#     clickTile(rows, cols)
 
 show(board)
