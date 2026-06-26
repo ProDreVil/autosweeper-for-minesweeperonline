@@ -3,9 +3,8 @@
 # 3 Modes: Flagging, Revealing, Chording
 # Corners, 1 2 3, 121 Combo
 # Statistics Saving
-# Center + Randomized Initial Clicks
 
-import pyautogui, time, random
+import pyautogui, time
 
 rows = 5
 cols = 5
@@ -63,44 +62,45 @@ def start():
             tlc = pyautogui.locateCenterOnScreen('resources/start.png', confidence = 0.8)
             if tlc:
                 pyautogui.click(tlc)
-                return tlc
+                return pyautogui.Point(int(tlc.x), int(tlc.y))
         except pyautogui.ImageNotFoundException:
             print("Start button not found...")
             zzz()
 
-def move(row, col):
-    x = origin.x + col * tile_size # 400
-    y = origin.y + row * tile_size # 355
-    pyautogui.moveTo(x, y)
+def tilePosition(row, col):
+    return origin.x + col * tile_size, origin.y + row * tile_size
 
-def clickCenter(rows, cols):
-    return rows // 2, cols // 2
+def scanBoard(board, origin, tile_size):
+    rows = len(board)
+    cols = len(board[0])
+    boardSS = pyautogui.screenshot(region=(int(origin.x), int(origin.y), int(cols * tile_size), int(rows * tile_size)))
+    for r in range(rows):
+        for c in range(cols):
+            cx = c * tile_size + tile_size // 2 - 2
+            cy = r * tile_size + tile_size // 2 - 2
 
-def clickRandom(board):
-    hidden = []
-    for r in range(len(board)):
-        for c in range(len(board[0])):
-            if board[r][c] == '?':
-                hidden.append((r, c))
-    return random.choice(hidden) if hidden else None
+            pyautogui.moveTo(int(origin.x) + cx, int(origin.y) + cy, duration=0.2)
+            color = boardSS.getpixel((cx, cy))
+            print(f"({r}, {c}) -> {color}")
+            time.sleep(0.5)
+            # left = c * tile_size
+            # top = r * tile_size
+            # tile = boardSS.crop((left, top, left + tile_size, top + tile_size))
+    return board
 
-def clickTile(rows, cols):
-    pyautogui.click(clickCenter(rows, cols))
+def clickTile(row, col):
+    x, y = tilePosition(row, col)
+    pyautogui.click(x, y)
 
 def show(board):
     print('\n'.join(' '.join(map(str, row)) for row in board))
 
-def scanBoard(board):
-    for i in range(3):
-        x = origin
-    return board
-
 
 zzz()
 
-skip = True # skip opening sequence?
+skip = True # skip opening sequence? (True / False)
 diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
-loops = 1 # how many games to play
+loops = 1 # how many games to play?
 
 openBrowser(skip)
 rows, cols, board = createBoard(diff)
@@ -114,22 +114,9 @@ while loops > 0:
     loops -= 1
     origin = start()
     # supposed loop starts here
-    scanBoard(board)
-    move(0, 0)
-    zzz()
-    move(0, 1)
-    zzz()
-    move(0, 2)
-    zzz()
-    move(0, 0)
-    zzz()
-    move(0, 1)
-    zzz()
-    move(0, 2)
+    scanBoard(board, origin, tile_size)
+    # clickTile(0, 0)
     zzz()
     show(board)
 
-# clickCenter(rows, cols)
-
-# for _ in range(loops):
-#     clickTile(rows, cols)
+print("This is the end")
