@@ -68,25 +68,35 @@ def start():
             zzz()
 
 def tilePosition(row, col):
-    return origin.x + col * tile_size, origin.y + row * tile_size
+    return origin.x - 2 + col * tile_size, origin.y - 2 + row * tile_size
 
 def scanBoard(board, origin, tile_size):
     rows = len(board)
     cols = len(board[0])
-    boardSS = pyautogui.screenshot(region=(int(origin.x), int(origin.y), int(cols * tile_size), int(rows * tile_size)))
+    zzz()
+    boardSS = pyautogui.screenshot(region=(int(origin.x) - 2, int(origin.y) - 2, int(cols * tile_size), int(rows * tile_size)))
+    # safeCheck(boardSS, tile_size)
     for r in range(rows):
         for c in range(cols):
-            cx = c * tile_size + tile_size // 2 - 2
-            cy = r * tile_size + tile_size // 2 - 2
-
-            pyautogui.moveTo(int(origin.x) + cx, int(origin.y) + cy, duration=0.2)
-            color = boardSS.getpixel((cx, cy))
-            print(f"({r}, {c}) -> {color}")
-            time.sleep(0.5)
-            # left = c * tile_size
-            # top = r * tile_size
-            # tile = boardSS.crop((left, top, left + tile_size, top + tile_size))
+            cx = c * tile_size + tile_size // 2
+            cy = r * tile_size + tile_size // 2
+            sample = boardSS.crop((cx - 3, cy - 3, cx + 3, cy + 3))
+            sample.save(f"tile_{r}_{c}.png")
+            # pyautogui.moveTo(int(origin.x) + cx - 2, int(origin.y) + cy - 2, duration = 0.2)
+            colors = sample.getcolors()
+            print(f"({r}, {c}) -> {colors}")
+            # color = boardSS.getpixel((cx, cy))
+            # pyautogui.moveTo(int(origin.x) + cx, int(origin.y) + cy, duration=0.2)
+            # print(f"({r}, {c}) -> {color}")
+            # zzz()
     return board
+
+def safeCheck(boardSS, tile_size):
+    for r in range(3):
+        left = 0
+        top = r * tile_size
+        tile = boardSS.crop((left, top, left + tile_size, top + tile_size))
+        tile.save(f"tile_{r}.png")
 
 def clickTile(row, col):
     x, y = tilePosition(row, col)
@@ -113,6 +123,7 @@ zzz()
 while loops > 0:
     loops -= 1
     origin = start()
+    zzz()
     # supposed loop starts here
     scanBoard(board, origin, tile_size)
     # clickTile(0, 0)
