@@ -74,17 +74,21 @@ def scanBoard(board, origin, tile_size):
     rows = len(board)
     cols = len(board[0])
     zzz()
-    boardSS = pyautogui.screenshot(region=(int(origin.x) - 2, int(origin.y) - 2, int(cols * tile_size), int(rows * tile_size)))
+    boardSS = pyautogui.screenshot(region=(int(origin.x) - 1, int(origin.y) - 1, int(cols * tile_size), int(rows * tile_size)))
     # safeCheck(boardSS, tile_size)
     for r in range(rows):
         for c in range(cols):
-            cx = c * tile_size + tile_size // 2
-            cy = r * tile_size + tile_size // 2
-            sample = boardSS.crop((cx - 3, cy - 3, cx + 3, cy + 3))
-            sample.save(f"tile_{r}_{c}.png")
+            # cx = c * tile_size + tile_size // 2 # - 2
+            # cy = r * tile_size + tile_size // 2 # - 2
+            # sample = boardSS.crop((cx - 3, cy - 3, cx + 3, cy + 3))
+            left = c * tile_size
+            top = r * tile_size
+            tile = boardSS.crop((left, top, left + tile_size - 1, top + tile_size - 1))
+            if r == 0 and c == 0:
+                tile.save(f"tile_{r}_{c}.png")
             # pyautogui.moveTo(int(origin.x) + cx - 2, int(origin.y) + cy - 2, duration = 0.2)
-            colors = sample.getcolors()
-            print(f"({r}, {c}) -> {colors}")
+            # colors = tile.getcolors()
+            # print(f"({r}, {c}) -> {colors}")
             # color = boardSS.getpixel((cx, cy))
             # pyautogui.moveTo(int(origin.x) + cx, int(origin.y) + cy, duration=0.2)
             # print(f"({r}, {c}) -> {color}")
@@ -92,11 +96,11 @@ def scanBoard(board, origin, tile_size):
     return board
 
 def safeCheck(boardSS, tile_size):
-    for r in range(3):
-        left = 0
-        top = r * tile_size
-        tile = boardSS.crop((left, top, left + tile_size, top + tile_size))
-        tile.save(f"tile_{r}.png")
+    for c in range(3):
+        left = c * tile_size
+        top = 0
+        tile = boardSS.crop((left, top, left + tile_size - 1, top + tile_size - 1))
+        tile.save(f"tile_{c}.png")
 
 def clickTile(row, col):
     x, y = tilePosition(row, col)
@@ -108,7 +112,7 @@ def show(board):
 
 zzz()
 
-skip = True # skip opening sequence? (True / False)
+skip = False # skip opening sequence? (True / False)
 diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
 loops = 1 # how many games to play?
 
