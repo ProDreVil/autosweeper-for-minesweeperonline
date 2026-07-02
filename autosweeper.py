@@ -4,12 +4,27 @@
 # Corners, 1 2 3, 121 Combo
 # Statistics Saving
 
+from tkinter import Image
+
 import pyautogui, time
 
 rows = 5
 cols = 5
 tile_size = 28
 board = [['?' for x in range(cols)] for y in range(rows)]
+pixels = {
+        (56, 64, 72): "0",
+        (124, 199, 255): "1",
+        (102, 194, 102): "2",
+        (255, 119, 136): "3",
+        # (0, 0, 0): "4",
+        # (0, 0, 0): "5",
+        # (0, 0, 0): "6",
+        # (0, 0, 0): "7",
+        # (0, 0, 0): "8",
+        (216, 224, 232): "F",
+        (76, 84, 92): "?",
+    }
 
 def zzz():
     time.sleep(0.5)
@@ -86,6 +101,7 @@ def scanBoard(board, origin, tile_size):
             tile = boardSS.crop((left, top, left + tile_size - 1, top + tile_size - 1))
             if r == 0 and c == 0:
                 tile.save(f"tile_{r}_{c}.png")
+            board[r][c] = identifyTile(tile)
             # pyautogui.moveTo(int(origin.x) + cx - 2, int(origin.y) + cy - 2, duration = 0.2)
             # colors = tile.getcolors()
             # print(f"({r}, {c}) -> {colors}")
@@ -96,7 +112,22 @@ def scanBoard(board, origin, tile_size):
     return board
 
 def identifyTile(tile):
-    pass
+    # references = {
+    #     "?": Image.open("resources/unknown.png"),
+    #     "0": Image.open("resources/0.png"),
+    #     "1": Image.open("resources/1.png"),
+    #     "2": Image.open("resources/2.png"),
+    #     "3": Image.open("resources/3.png"),
+    #     "4": Image.open("resources/4.png"),
+    #     "5": Image.open("resources/5.png"),
+    #     "6": Image.open("resources/6.png"),
+    #     "7": Image.open("resources/7.png"),
+    #     "8": Image.open("resources/8.png"),
+    #     "F": Image.open("resources/flag.png"),
+    # }
+    color = tile.getpixel((16, 20))
+    print(f"Tile color: {color}")
+    return pixels.get(color)
 
 def safeCheck(boardSS, tile_size):
     for c in range(3):
