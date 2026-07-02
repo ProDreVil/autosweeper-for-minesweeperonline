@@ -1,2 +1,0 @@
-openBrowser()
-openMinesweeper()

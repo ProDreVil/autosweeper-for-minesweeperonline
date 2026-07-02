@@ -95,6 +95,9 @@ def scanBoard(board, origin, tile_size):
             # zzz()
     return board
 
+def identifyTile(tile):
+    pass
+
 def safeCheck(boardSS, tile_size):
     for c in range(3):
         left = c * tile_size
@@ -112,7 +115,7 @@ def show(board):
 
 zzz()
 
-skip = False # skip opening sequence? (True / False)
+skip = True # skip opening sequence? (True / False)
 diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
 loops = 1 # how many games to play?
 
@@ -128,8 +131,8 @@ while loops > 0:
     loops -= 1
     origin = start()
     zzz()
-    # supposed loop starts here
     scanBoard(board, origin, tile_size)
+    # supposed loop starts here
     # clickTile(0, 0)
     zzz()
     show(board)
