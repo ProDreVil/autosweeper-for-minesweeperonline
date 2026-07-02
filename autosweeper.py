@@ -141,6 +141,7 @@ def clickTile(row, col):
     pyautogui.click(x, y)
 
 def show(board):
+    print('\n')
     print('\n'.join(' '.join(map(str, row)) for row in board))
 
 
