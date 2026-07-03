@@ -68,6 +68,11 @@ def difficulty(diff):
             print(f"{diff} button not found...")
             zzz()
 
+def scroll(diff):
+    if diff == "intermediate" or diff == "expert":
+        pyautogui.scroll(-120)
+        zzz()
+
 def closeAd():
     try:
         close = pyautogui.locateCenterOnScreen('resources/close.png', confidence = 0.8)
@@ -186,8 +191,8 @@ def lost(board):
 
 zzz()
 
-skip = True # skip opening sequence? (True / False)
-diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
+skip = False # skip opening sequence? (True / False)
+diff = "intermediate" # u can change the difficulty here lol (beginner, intermediate, expert)
 loops = 3 # how many games to play?
 
 openBrowser(skip)
@@ -195,6 +200,7 @@ if not skip:
     openMinesweeper()
     difficulty(diff)
     zzz()
+    scroll(diff)
 
 zzz()
 while loops > 0:
@@ -206,7 +212,7 @@ while loops > 0:
     while True:
         scanBoard(board, origin, tile_size)
         # show(board)
-        # zzz()
+        zzz()
         if won(board) or lost(board):
             if won(board):
                 print("Game won!")
