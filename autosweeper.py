@@ -1,15 +1,7 @@
-# TODO: Automated Minesweeper
-# Color/Number Detection
-# 3 Modes: Flagging, Revealing, Chording
-# Corners, 1 2 3, 121 Combo
-# Statistics Saving
-
-from tkinter import Image
-
 import pyautogui, time
 
-rows = 5
-cols = 5
+rows = 5 # Test and
+cols = 5 # Placeholder
 tile_size = 28
 board = [['?' for x in range(cols)] for y in range(rows)]
 pixels = {
@@ -72,6 +64,9 @@ def difficulty(diff):
             zzz()
 
 def start():
+    close = pyautogui.locateCenterOnScreen('resources/close.png', confidence = 0.8)
+    if close:
+        pyautogui.click(close)
     while True:
         try:
             tlc = pyautogui.locateCenterOnScreen('resources/start.png', confidence = 0.8)
@@ -90,59 +85,76 @@ def scanBoard(board, origin, tile_size):
     cols = len(board[0])
     zzz()
     boardSS = pyautogui.screenshot(region=(int(origin.x) - 1, int(origin.y) - 1, int(cols * tile_size), int(rows * tile_size)))
-    # safeCheck(boardSS, tile_size)
     for r in range(rows):
         for c in range(cols):
-            # cx = c * tile_size + tile_size // 2 # - 2
-            # cy = r * tile_size + tile_size // 2 # - 2
-            # sample = boardSS.crop((cx - 3, cy - 3, cx + 3, cy + 3))
             left = c * tile_size
             top = r * tile_size
             tile = boardSS.crop((left, top, left + tile_size - 1, top + tile_size - 1))
             if r == 0 and c == 0:
                 tile.save(f"tile_{r}_{c}.png")
             board[r][c] = identifyTile(tile)
-            # pyautogui.moveTo(int(origin.x) + cx - 2, int(origin.y) + cy - 2, duration = 0.2)
-            # colors = tile.getcolors()
-            # print(f"({r}, {c}) -> {colors}")
-            # color = boardSS.getpixel((cx, cy))
-            # pyautogui.moveTo(int(origin.x) + cx, int(origin.y) + cy, duration=0.2)
-            # print(f"({r}, {c}) -> {color}")
-            # zzz()
     return board
 
 def identifyTile(tile):
-    # references = {
-    #     "?": Image.open("resources/unknown.png"),
-    #     "0": Image.open("resources/0.png"),
-    #     "1": Image.open("resources/1.png"),
-    #     "2": Image.open("resources/2.png"),
-    #     "3": Image.open("resources/3.png"),
-    #     "4": Image.open("resources/4.png"),
-    #     "5": Image.open("resources/5.png"),
-    #     "6": Image.open("resources/6.png"),
-    #     "7": Image.open("resources/7.png"),
-    #     "8": Image.open("resources/8.png"),
-    #     "F": Image.open("resources/flag.png"),
-    # }
     color = tile.getpixel((16, 20))
-    print(f"Tile color: {color}")
-    return pixels.get(color)
+    # print(f"Tile color: {color}")
+    return pixels.get(color, "X")
 
-def safeCheck(boardSS, tile_size):
-    for c in range(3):
-        left = c * tile_size
-        top = 0
-        tile = boardSS.crop((left, top, left + tile_size - 1, top + tile_size - 1))
-        tile.save(f"tile_{c}.png")
+def getAdjacentTiles(board, row, col):
+    adjacent = []
+    for dr in [-1, 0, 1]:
+        for dc in [-1, 0, 1]:
+            if dr == 0 and dc == 0:
+                continue
+            nr, nc = row + dr, col + dc
+            if 0 <= nr < len(board) and 0 <= nc < len(board[0]):
+                adjacent.append((nr, nc))
+    return adjacent
+
+def logic(board):
+    safeMoves = set()
+    flagMoves = set()
+    for r in range(len(board)):
+        for c in range(len(board[0])):
+            if board[r][c] in "12345678":
+                number = int(board[r][c])
+                adjacent = getAdjacentTiles(board, r, c)
+                flagged = 0
+                unknown = []
+                for nr, nc in adjacent:
+                    if board[nr][nc] == "F":
+                        flagged += 1
+                    elif board[nr][nc] == "?":
+                        unknown.append((nr, nc))
+                if flagged == number and unknown:
+                    for nr, nc in unknown:
+                        safeMoves.add((nr, nc))
+                elif flagged + len(unknown) == number and unknown:
+                    for nr, nc in unknown:
+                        board[nr][nc] = "F"
+                        flagMoves.add((nr, nc))
+    for r, c in flagMoves:
+        flagTile(r, c)
+        # zzz()
+    for r, c in safeMoves:
+        clickTile(r, c)
+        # zzz()
+    return len(safeMoves)
 
 def clickTile(row, col):
     x, y = tilePosition(row, col)
     pyautogui.click(x, y)
 
+def flagTile(row, col):
+    x, y = tilePosition(row, col)
+    pyautogui.rightClick(x, y)
+
 def show(board):
     print('\n')
     print('\n'.join(' '.join(map(str, row)) for row in board))
+
+def won(board):
+    return not any('?' in row for row in board)
 
 
 zzz()
@@ -152,7 +164,6 @@ diff = "beginner" # u can change the difficulty here lol (beginner, intermediate
 loops = 1 # how many games to play?
 
 openBrowser(skip)
-rows, cols, board = createBoard(diff)
 if not skip:
     openMinesweeper()
     difficulty(diff)
@@ -161,12 +172,18 @@ if not skip:
 zzz()
 while loops > 0:
     loops -= 1
+    rows, cols, board = createBoard(diff)
     origin = start()
     zzz()
-    scanBoard(board, origin, tile_size)
-    # supposed loop starts here
-    # clickTile(0, 0)
-    zzz()
-    show(board)
+    while True:
+        scanBoard(board, origin, tile_size)
+        zzz()
+        if won(board):
+            break
+        moves = logic(board)
+        if moves == 0:
+            print("Stuck!")
+            break
+        show(board)
 
 print("This is the end")
