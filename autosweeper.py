@@ -2,6 +2,8 @@
 # Pattern Recognition
 # Statistics Saving
 
+import random
+
 import pyautogui, time
 
 rows = 5 # Test and
@@ -24,7 +26,12 @@ pixels = {
     }
 
 def zzz():
-    time.sleep(0.5)
+    delay = random.uniform(0.4, 0.6) # Random delay between 0.4 and 0.6 seconds (to avoid bot detection)
+    time.sleep(delay)
+
+def hiccup():
+    delay = random.uniform(0.2, 0.3)
+    time.sleep(delay)
 
 def openBrowser(skip):
     browser = pyautogui.locateCenterOnScreen('resources/chrome.png', confidence = 0.8)
@@ -152,7 +159,7 @@ def logic(board):
                     for nr, nc in unknown:
                         board[nr][nc] = "F"
                         flagMoves.add((nr, nc))
-    print(f"Safe moves: {safeMoves}, Flag moves: {flagMoves}")
+    # print(f"Safe moves: {safeMoves}, Flag moves: {flagMoves}")
     for r, c in flagMoves:
         flagTile(r, c)
         # zzz()
@@ -172,10 +179,12 @@ def guess(board):
     return False
 
 def clickTile(row, col):
+    hiccup()
     x, y = tilePosition(row, col)
     pyautogui.click(x, y)
 
 def flagTile(row, col):
+    hiccup()
     x, y = tilePosition(row, col)
     pyautogui.rightClick(x, y)
 
@@ -191,9 +200,9 @@ def lost(board):
 
 zzz()
 
-skip = False # skip opening sequence? (True / False)
-diff = "intermediate" # u can change the difficulty here lol (beginner, intermediate, expert)
-loops = 3 # how many games to play?
+skip = True # skip opening sequence? (True / False)
+diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
+loops = 1 # how many games to play?
 
 openBrowser(skip)
 if not skip:
