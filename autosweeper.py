@@ -1,6 +1,7 @@
 # TODO: Automated Minesweeper Online Solver
 # Pattern Recognition
 # Statistics Saving
+# Fake "mistakes" and reduced bot movements
 
 import random
 
