@@ -136,6 +136,10 @@ def logic(board):
                         flagged += 1
                     elif board[nr][nc] == "?":
                         unknown.append((nr, nc))
+                # print(f"Tile ({r},{c}) = {number}")
+                # print(f"Flags: {flagged}")
+                # print(f"Unknown: {unknown}")
+                # print()
                 if flagged == number and unknown:
                     for nr, nc in unknown:
                         safeMoves.add((nr, nc))
@@ -143,6 +147,7 @@ def logic(board):
                     for nr, nc in unknown:
                         board[nr][nc] = "F"
                         flagMoves.add((nr, nc))
+    print(f"Safe moves: {safeMoves}, Flag moves: {flagMoves}")
     for r, c in flagMoves:
         flagTile(r, c)
         # zzz()
@@ -201,14 +206,14 @@ while loops > 0:
     while True:
         scanBoard(board, origin, tile_size)
         # show(board)
-        zzz()
-        if won(board):
-            print("Game won!")
+        # zzz()
+        if won(board) or lost(board):
+            if won(board):
+                print("Game won!")
+            else:
+                print("Game lost!")
             pyautogui.press('space')
-            break
-        if lost(board):
-            print("Game lost!")
-            pyautogui.press('space')
+            zzz()
             break
         moves = logic(board)
         if moves == 0:
