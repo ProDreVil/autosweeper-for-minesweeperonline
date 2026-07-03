@@ -1,3 +1,7 @@
+# TODO: Automated Minesweeper Online Solver
+# Pattern Recognition
+# Statistics Saving
+
 import pyautogui, time
 
 rows = 5 # Test and
@@ -16,6 +20,7 @@ pixels = {
         (208, 216, 224): "8",
         (216, 224, 232): "F",
         (76, 84, 92): "?",
+        # (255, 0, 0): "X"
     }
 
 def zzz():
@@ -63,10 +68,15 @@ def difficulty(diff):
             print(f"{diff} button not found...")
             zzz()
 
+def closeAd():
+    try:
+        close = pyautogui.locateCenterOnScreen('resources/close.png', confidence = 0.8)
+        if close:
+            pyautogui.click(close)
+    except pyautogui.ImageNotFoundException:
+        print("No ad to close yay!")
+
 def start():
-    close = pyautogui.locateCenterOnScreen('resources/close.png', confidence = 0.8)
-    if close:
-        pyautogui.click(close)
     while True:
         try:
             tlc = pyautogui.locateCenterOnScreen('resources/start.png', confidence = 0.8)
@@ -141,6 +151,16 @@ def logic(board):
         # zzz()
     return len(safeMoves)
 
+def guess(board):
+    rows = len(board)
+    cols = len(board[0])
+    corners = [(0, 0), (0, cols - 1), (rows - 1, 0), (rows - 1, cols - 1)]
+    for r, c in corners:
+        if board[r][c] == "?":
+            clickTile(r, c)
+            return True
+    return False
+
 def clickTile(row, col):
     x, y = tilePosition(row, col)
     pyautogui.click(x, y)
@@ -156,12 +176,14 @@ def show(board):
 def won(board):
     return not any('?' in row for row in board)
 
+def lost(board):
+    return any('X' in row for row in board)
 
 zzz()
 
 skip = True # skip opening sequence? (True / False)
 diff = "beginner" # u can change the difficulty here lol (beginner, intermediate, expert)
-loops = 1 # how many games to play?
+loops = 3 # how many games to play?
 
 openBrowser(skip)
 if not skip:
@@ -173,17 +195,27 @@ zzz()
 while loops > 0:
     loops -= 1
     rows, cols, board = createBoard(diff)
+    closeAd()
     origin = start()
     zzz()
     while True:
         scanBoard(board, origin, tile_size)
+        # show(board)
         zzz()
         if won(board):
+            print("Game won!")
+            pyautogui.press('space')
+            break
+        if lost(board):
+            print("Game lost!")
+            pyautogui.press('space')
             break
         moves = logic(board)
         if moves == 0:
-            print("Stuck!")
-            break
+            print("No safe moves found, making a guess...") # Temp
+            if not guess(board):
+                print("Failed to make a guess.")
+                break
         show(board)
 
 print("This is the end")
