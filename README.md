@@ -89,7 +89,7 @@ code .
 
 ---
 
-### Operation
+## Operation:
 
 I have nothing much to say here since this project involves automation. One run and the program will do the work needed. Though, it's still worth reading the comments I left in the code.
 
