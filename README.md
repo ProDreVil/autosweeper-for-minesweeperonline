@@ -72,7 +72,7 @@ pip show pyautogui
 PyAutoGUI should appear with its installed version. Take note that the installation might take a while.
 
 
-***Additional:** Make sure you have a Minesweeper Online bookmark and name it to "Mine". If you don't plan on adding one, turn the `Skip` variable False instead.*
+***Additional:** Make sure you have a Minesweeper Online bookmark and name it to "Mine". If you don't plan on adding one, turn the `Skip` variable to False instead.*
 
 
 ### > Cloning
