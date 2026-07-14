@@ -4,7 +4,9 @@ A personalized minesweeper solver for Minesweeper.online.
 
 This program uses a model based agent that scans the entire board through screenshots and converts it into a matrix representation.
 
-***Disclaimer**: This solver is made for a school project. When testing, I recommend using a different account. This is still not the final full version. All the features with strikethrough are for the future improvements.*
+***Disclaimer:** This solver is made for a school project. When testing, I recommend using a different account. This is still not the final full version. All the features with strikethrough are for the future improvements.*
+
+---
 
 ## Features:
 - Automated minesweeper solver
@@ -70,7 +72,7 @@ pip show pyautogui
 PyAutoGUI should appear with its installed version. Take note that the installation might take a while.
 
 
-***Additional**: Make sure you have a Minesweeper Online bookmark and name it to "Mine". If you don't plan on adding one, turn the `Skip` variable False instead.*
+***Additional:** Make sure you have a Minesweeper Online bookmark and name it to "Mine". If you don't plan on adding one, turn the `Skip` variable False instead.*
 
 
 ### > Cloning
@@ -83,8 +85,9 @@ git clone https://github.com/ProDreVil/autosweeper-for-minesweeperonline.git
 code .
 ```
 
-Note: Only use `code .` if you have VSCode. If not, proceed to open manually in the File Explorer.
+***Note:** Only use `code .` if you have VSCode. If not, proceed to open manually in the File Explorer.*
 
+---
 
 ### Operation
 
